@@ -1,0 +1,152 @@
+APSTNDP
+
+ipconfig  - IP info
+ipconfig /all
+hostname - PC Name
+nslookup google.com - DNS
+ping 8.8.8.8 - connectivity
+tracert google.com  - route
+netstat - active connections port
+
+ipconfig /flushdns
+ipconfig /display
+dnsnslookup -type=NS google.com
+
+
+| Class | Range (1st Octet) | Default Mask  | Usage          |
+| ----- | ----------------- | ------------- | -------------- |
+| A     | 1 – 127           | 255.0.0.0     | Large networks |
+| B     | 128 – 191         | 255.255.0.0   | Medium         |
+| C     | 192 – 223         | 255.255.255.0 | Small          |
+| D     | 224 – 239         | Multicast     | Special        |
+| E     | 240 – 255         | Experimental  | Not used       |
+
+
+
+| Class | Private Range                 |
+| ----- | ----------------------------- |
+| A     | 10.0.0.0 – 10.255.255.255     |
+| B     | 172.16.0.0 – 172.31.255.255   |
+| C     | 192.168.0.0 – 192.168.255.255 |
+
+
+
+Router Config
+enable
+config t
+interface fa0/0
+ip address 38.79.1.1 255.255.255.0
+no shutdown
+
+
+
+TELNET CONFIGURATION
+
+1. Assign IP switch
+enable
+config t
+interface vlan 1
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+
+2. Configure VTY lines
+line vty 0 15
+password cisco
+login
+end
+
+config t
+enable password cs
+
+telnet 192.168.1.1
+
+
+
+
+ssh config:
+enable
+config t
+
+hostname sameer
+ip domain-name lab.com
+
+crypto key generate rsa
+1024
+
+ip ssh version 2
+
+username admin secret 123
+
+line vty 0 15
+login local
+transport input ssh
+
+config t
+enable password cs
+
+ssh -l admin 38.79.1.10
+
+
+
+
+400 Bad Request → wrong syntax
+401 Unauthorized → login required
+403 Forbidden → access denied
+404 Not Found → page not found (MOST COMMON)
+408 Timeout → request took too long
+
+
+500 Internal Server Error → server crashed
+501 Not Implemented → feature not supported
+502 Bad Gateway → invalid response from another server
+503 Service Unavailable → server down/overloaded
+
+304 Not Modified
+301 Redirect
+
+
+
+HTTP → 80 (normal web)
+HTTPS → 443 (secure web)
+FTP → 21 (control), 20 (data)
+SMTP → 25 (email sending)
+DNS → 53 (name resolution)
+Telnet → 23 (insecure remote login)
+SSH → 22 (secure remote login)
+
+
+
+ip route <destination_network> <subnet_mask> <next_hop>
+
+Type	When Applied
+Inbound	Before routing
+Outbound	After routing
+
+
+access-list 1 permit 10.0.0.2 0.0.0.0
+access-list 1 deny 40.0.0.2 0.0.0.0
+
+interface serial 2/0
+ip access-group 1 out
+show access-lists
+
+no ip access-list 1
+
+access-list <100-199> permit|deny <protocol> <source> <wildcard> <destination> <wildcard>
+
+access-list 110 deny icmp host 40.0.0.2 any
+access-list 110 permit icmp any host 40.0.0.2 echo-reply
+access-list 110 permit ip any any
+
+interface fa0/0
+ip access-group 110 out
+
+access-list 120 deny ip 10.0.0.0 0.255.255.255 30.0.0.0 0.255.255.255
+access-list 120 permit ip any any
+
+
+access-list 102 permit ip host 192.168.1.10 192.168.2.0 0.0.0.255
+access-list 102 deny ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255
+access-list 102 permit ip any any
+
