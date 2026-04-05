@@ -33,17 +33,27 @@ def resolve(domain):
         print("\n[CACHE HIT]")
         return cached
 
-    print("Contacting ROOT DNS")
+    domain_parts = domain.split('.')
+    tld_name = f".{domain_parts[-1]}"
+    auth_name = domain_parts[-2]
+
+    print(f"Contacting ROOT DNS at {ROOT_SERVER[0]}:{ROOT_SERVER[1]}")
 
     root_reply = query(ROOT_SERVER, domain)
+    if "server" not in root_reply:
+        return {}
+
     tld_server = tuple(root_reply["server"])
 
-    print("Contacting TLD server")
+    print(f"Contacting {tld_name} TLD server at {tld_server[0]}:{tld_server[1]}")
 
     tld_reply = query(tld_server, domain)
+    if "server" not in tld_reply:
+        return {}
+
     auth_server = tuple(tld_reply["server"])
 
-    print("Contacting Authoritative server")
+    print(f"Contacting {auth_name} Authoritative server at {auth_server[0]}:{auth_server[1]}")
 
     final_reply = query(auth_server, domain)
     cache.add(domain, final_reply)
